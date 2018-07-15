@@ -38,6 +38,37 @@ bool fermat(mpz_t p, mpz_t q, const mpz_t n, long long iterlimit){
     mpz_clear(b);
     return true;
 }
+//TODO: iterlimit
+//bool fermat3(mpz_t p, mpz_t q, const mpz_t n, long long iterlimit) {
+//    mpz_t r, t, u, v, e;
+//    mpz_inits(r, t, u, v, e,NULL);
+//    mpz_set_ui(u, 1);
+//    mpz_set_ui(v, 1);
+//
+//    mpz_sqrt(r, n);
+//    mpz_add_ui(r, r, 1);
+//
+//    mpz_addmul_ui(u, r, 2);
+//    mpz_mul(e, r, r);
+//    mpz_sub(e, e, n);
+//    while (mpz_cmp_ui(e, 0) != 0) {
+//        while (mpz_cmp_ui(e, 0) < 0) {
+//            mpz_add(e, e, u);
+//            mpz_add_ui(u, u, 2);
+//        }
+//        while (mpz_cmp_ui(e, 0) > 0) {
+//            mpz_sub(e, e, u);
+//            mpz_add_ui(v, v, 2);
+//        }
+//    }
+//    mpz_add(p, u, v);
+//    mpz_div_ui(p, p, 2);
+//    mpz_sub_ui(p, p, 1);
+//    mpz_sub(q, u, v);
+//    mpz_div_ui(q, q, 2);
+//    mpz_clears(r, t, u, v, e,NULL);
+//    return false;
+//}
 
 //bool fermat2(mpz_t p, mpz_t q, const mpz_t n, long long iterlimit){
 //    mpz_t x,y,w;
