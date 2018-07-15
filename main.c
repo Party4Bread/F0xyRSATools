@@ -7,7 +7,9 @@
 bool fermat(mpz_t p, mpz_t q, mpz_t n, long long iterlimit);
 bool kraitchik(mpz_t p, mpz_t q, mpz_t n, long long iterlimit);
 bool wiener(mpz_t p, mpz_t q, mpz_t n, mpz_t e);
-
+bool smallprime(mpz_t p, mpz_t q, mpz_t n, mpz_t e);
+bool pollardrho(mpz_t p, mpz_t q, mpz_t n, long long iterlimit,long long c);
+bool pollardrho_brent(mpz_t p, mpz_t q, mpz_t n, long long iterlimit,long long c);
 void test_factorization();
 
 int main()
@@ -26,13 +28,26 @@ void test_factorization(){
 
     mpz_set_str(N, "4E733FEBB94DB17CA3E6AA26EC33B4960C150C52300E06C60B3318F0744FEF2D687A8F5BF598894A22EEC4ABDAE01B197E4CC5603DE67EB670E261EB4E4CC5E26241EDCDE494CCE415BBC5A410ABCEFDFF6199BBCDF62E9D434FAA88A1D16012520F80D126208206FF80191E20ED7423CDCE5B8A555B4161534E789A74F0A701", 16);
 
+    mpz_set_ui(p,1);
+    mpz_set_ui(q,1);
     puts("-----------Fermat Method-----------");
     fermat(p, q, N, INF_ITER);
     gmp_printf("p = %Zd\n", p);
     gmp_printf("q = %Zd\n", q);
 
+    mpz_set_ui(p,1);
+    mpz_set_ui(q,1);
     puts("-----------Kraitchik Method-----------");
     kraitchik(p, q, N, INF_ITER);
+    gmp_printf("p = %Zd\n", p);
+    gmp_printf("q = %Zd\n", q);
+
+    mpz_set_str(N, "21", 10);
+
+    mpz_set_ui(p,1);
+    mpz_set_ui(q,1);
+    puts("-----------Pollard Rho Method-----------");
+    pollardrho(p, q, N, INF_ITER, 1);
     gmp_printf("p = %Zd\n", p);
     gmp_printf("q = %Zd\n", q);
 
@@ -123,18 +138,37 @@ bool kraitchik(mpz_t p, mpz_t q, mpz_t n, long long int iterlimit){
         mpz_add_ui(x,x,1);
     }
 }
-/*
-def kraitchik(n):
-x = ceil(sqrt(n))
-while True:
-k = 1
-while x^2 - k*n >= 0:
-if is_square(x^2-k*n):
-y = sqrt(x^2-k*n)
-if (x+y) % n != 0 and (x-y) % n != 0:
-a = gcd(x+y, n)
-b = gcd(x-y, n)
-return (a, b, n//(a*b))
-        k = k+1
-x = x+1
- */
+
+//Not Working WTF
+bool pollardrho(mpz_t p, mpz_t q, mpz_t n, long long iterlimit,long long c){
+    mpz_t xF, cS, x ,f, cnt, t1;
+    mpz_init_set_ui(xF,2);
+    mpz_init_set_ui(cS,2);
+    mpz_init_set_ui(x,2);
+    mpz_init_set_ui(f,1);
+    mpz_init(cnt);
+    mpz_init(t1);
+
+    while(mpz_cmp_ui(f,1)==0&&(iterlimit==INF_ITER||mpz_cmp_ui(cS,iterlimit)==-1)){
+        mpz_set_ui(cnt,1);
+        while(mpz_cmp(cnt,cS)<1&&mpz_cmp_ui(f,1)<1){
+            mpz_mul(x,x,x);
+            mpz_add_ui(x,x,c);
+            mpz_mod(x,x,n);
+
+            mpz_sub(t1,x,xF);
+            mpz_gcd(f,t1,n);
+            mpz_add_ui(cnt,cnt,1);
+        }
+        mpz_mul_ui(cS,cS,2);
+        mpz_set(xF,x);
+    }
+    if(mpz_cmp_ui(f,1)!=0){
+        mpz_div(q,n,f);
+        mpz_set(p,f);
+        return true;
+    }
+    else{
+        return false;
+    }
+}
