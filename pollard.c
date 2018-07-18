@@ -41,7 +41,7 @@ bool pollardrho(mpz_t p, mpz_t q, const mpz_t n, long long iterlimit){
 }
 
 //TODO:Increase Memory Efficiency, Increase Speed, iterlimit
-bool pollardrho_brent(mpz_t p, mpz_t q, const mpz_t n, long long iterlimit){
+bool pollardrho_brent(mpz_t p, mpz_t q, const mpz_t n,unsigned long long iterlimit){
     mpz_t y,c,m,g,r,v,x,k,ys,upper , i,t1;
     mpz_init_set_ui(y,1);
     mpz_init_set_ui(c,1);
@@ -57,7 +57,8 @@ bool pollardrho_brent(mpz_t p, mpz_t q, const mpz_t n, long long iterlimit){
         mpz_mod(src,src,n);
     }
 
-    while(mpz_cmp_ui(g,1)==0){
+    while(mpz_cmp_ui(g,1)==0&&iterlimit>0){
+        iterlimit--;
         mpz_set(x,y);
         for(mpz_set_ui(i,0); mpz_cmp(i,r)<0;mpz_add_ui(i,i,1)){
             f(y);

@@ -11,11 +11,41 @@ void test_factorization();
 
 void speedtest();
 
-int main()
+int main(int argc, char **argv)
 {
-    speedtest();
+    if(argc!=2){
+        printf("Usage : %s [number]",argv[0]);
+        return 0;
+    }
+    mpz_t n,p,q;
+    mpz_inits(p,q,NULL);
+    mpz_init_set_str(n,argv[1],10);
+    if(!mpz_probab_prime_p(n,36)){
+        printf("It's prime....");
+        return 0;
+    }
+    size_t s = mpz_sizeinbase(n,2);
+
+    if(s<=24){
+        shanks(p,q,n,INF_ITER);
+    }else if(s<=128){
+        if(!pollardrho_brent(p,q,n,INF_ITER)){
+            if(!fermat(p,q,n,100000000)){
+                shanks(p,q,n,INF_ITER);
+            }
+        }
+    }else{
+        printf("From 128bits using alternative approach is recommended");
+        if(!pollardrho_brent(p,q,n,1000000000)){
+            if(!fermat(p,q,n,100000000)){
+                shanks(p,q,n,INF_ITER);
+            }
+        }
+    }
+    gmp_printf("p = %Zd\n", p);
+    gmp_printf("q = %Zd\n", q);
+    //speedtest();
     //test_factorization();
-    return 0;
 }
 
 void test_factorization(){
